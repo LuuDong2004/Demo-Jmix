@@ -5,7 +5,9 @@
     <data>
         <collection id="usersDc"
                     class="com.company.onboarding.entity.User">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="department" fetchPlan="_base"/>
+            </fetchPlan>
             <loader id="usersDl" readOnly="true">
                 <query>
                     <![CDATA[select e from User e order by e.username]]>
@@ -58,6 +60,7 @@
                 <action id="showUserSubstitutionsAction" type="sec_showUserSubstitutions"/>
             </actions>
             <columns resizable="true">
+                <column key="picture" sortable="false" flexGrow="0" resizable="false"/>
                 <column property="username"/>
                 <column property="firstName"/>
                 <column property="lastName"/>
@@ -65,6 +68,9 @@
                 <column property="timeZoneId"/>
                 <column property="active"/>
                 <column property="onboardingStatus"/>
+                <column property="department"/>
+                <column property="joiningDate"/>
+<!--                <column property="picture"/>-->
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

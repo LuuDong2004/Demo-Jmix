@@ -3,10 +3,27 @@
       title="msg://UserDetailView.title"
       focusComponent="form">
     <data>
+        <collection id="departmentsDc" class="com.company.onboarding.entity.Department">
+            <loader id="departmentsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Department e
+                    order by e.name asc]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
         <instance id="userDc"
                   class="com.company.onboarding.entity.User">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="department" fetchPlan="_base"/>
+                <property name="steps" fetchPlan="_base">
+                    <property name="step" fetchPlan="_base">
+                        <property name="name"/>
+                    </property>
+                </property>
+            </fetchPlan>
             <loader/>
+            <collection id="stepsDc" property="steps"/>
         </instance>
     </data>
     <actions>
@@ -18,6 +35,9 @@
     </facets>
     <layout>
         <formLayout id="form" dataContainer="userDc">
+            <details summaryText="Picture">
+                <fileStorageUploadField id="pictureField" property="picture" dataContainer="userDc"/>
+            </details>
             <textField id="usernameField" property="username" readOnly="true"/>
             <passwordField id="passwordField"
                            label="msg://com.company.onboarding.entity/User.password"
@@ -33,7 +53,30 @@
             <comboBox id="timeZoneField" property="timeZoneId" clearButtonVisible="true"/>
             <checkbox id="activeField" property="active"/>
             <select id="onboardingStatusField" property="onboardingStatus"/>
+            <entityComboBox id="departmentField" property="department" itemsContainer="departmentsDc">
+                <!--                <actions>-->
+                <!--                    <action id="entityLookupAction" type="entity_lookup"/>-->
+                <!--                    <action id="entityClearAction" type="entity_clear"/>-->
+                <!--                </actions>-->
+            </entityComboBox>
+            <datePicker id="joiningDateField" property="joiningDate"/>
         </formLayout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="generateButton" text="Generate"/>
+        </hbox>
+        <dataGrid id="stepsDataGrid" dataContainer="stepsDc" width="100%" height="100%">
+            <columns>
+                <column key="completed" sortable="false" width="4em" flexGrow="0"/>
+                <column property="step.name" header="Name"/>
+                <column property="dueDate" header="Due date" />
+                <column property="completedDate" header="Completed date"/>
+            </columns>
+            <headerRow>
+                <header text="Name" column="step.name"/>
+                <header text="Due date" column="dueDate"/>
+                <header text="Completed date" column="completedDate"/>
+            </headerRow>
+        </dataGrid>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
